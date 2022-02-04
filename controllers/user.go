@@ -1,9 +1,12 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
+	"mongo-golang/models"
 	"net/http"
 )
 
@@ -16,6 +19,28 @@ func NewUserController(s *mgo.Session) *UserController {
 }
 
 func (uc UserController) GetUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	id := p.ByName("id")
 
-	fmt.Fprintf(w, "User Found")
+	if !bson.IsObjectIdHex(id) {
+		w.WriteHeader(http.StatusNotFound)
+	}
+
+	oid := bson.ObjectIdHex(id)
+
+	u := models.User{}
+
+	err := uc.session.DB("mongo-golang").C("users").FindId(oid).One(&u)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+	}
+
+	uj, err := json.Marshal(u)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "%s", uj)
+
 }

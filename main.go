@@ -19,7 +19,7 @@ func main() {
 		writer.WriteHeader(200)
 		fmt.Fprint(writer, "Hello World")
 	})
-	r.GET("/user", uc.GetUser)
+	r.GET("/user/:id", uc.GetUser)
 
 	http.ListenAndServe("localhost:9000", r)
 }
