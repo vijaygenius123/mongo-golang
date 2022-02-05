@@ -20,6 +20,7 @@ func main() {
 		fmt.Fprint(writer, "Hello World")
 	})
 	r.GET("/user/:id", uc.GetUser)
+	r.POST("/user/", uc.CreateUser)
 
 	http.ListenAndServe("localhost:9000", r)
 }
