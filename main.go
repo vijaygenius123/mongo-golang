@@ -21,6 +21,7 @@ func main() {
 	})
 	r.GET("/user/:id", uc.GetUser)
 	r.POST("/user/", uc.CreateUser)
+	r.DELETE("/user/:id", uc.DeleteUser)
 
 	http.ListenAndServe("localhost:9000", r)
 }
